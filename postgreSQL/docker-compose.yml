@@ -1,0 +1,42 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "123"
+      PGDATA: /data/postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data/postgres
+    networks:
+      - post
+      - net
+
+  pgadminDev:
+    user: "${UID}:${GID}"
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "ex@ex.com"
+      PGADMIN_DEFAULT_PASSWORD: "123"
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - /home/akeka/proj/postgresqlDocker/data/:/var/lib/pgadmin
+    ports:
+      - "81:80"
+    networks:
+      - post
+      - net
+
+volumes:
+  postgres:
+  pgadmin:
+
+networks:
+  post:
+    driver: bridge
+  net:
+    driver: bridge
