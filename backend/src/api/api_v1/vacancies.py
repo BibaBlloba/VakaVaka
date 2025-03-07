@@ -2,8 +2,7 @@ from fastapi import APIRouter, HTTPException, Query
 from fastapi_cache.decorator import cache
 from sqlalchemy.exc import IntegrityError
 
-from api.api_v1.dependencies import (DbDep, PaginationDap, UserIdDap,
-                                     VacanciesFiltersDap)
+from api.api_v1.dependencies import DbDep, PaginationDap, UserIdDap
 from schemas.tags import TagsVacanciesAdd
 from schemas.vacancies import VacancyAdd, VacancyAddRequest
 
