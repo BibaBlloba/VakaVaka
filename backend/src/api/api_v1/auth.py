@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Body, Depends, HTTPException, Response
 
 from api.api_v1.dependencies import AdminRequired, DbDep, UserIdDap
+from schemas.auth_tokens import TokenInfo
 from schemas.users import UserAdd, UserAddRequest, UserLogin
 from services.auth import AuthService
 
@@ -42,8 +43,10 @@ async def login_user(
     access_token = AuthService().create_access_token(
         {"user_id": user.id, "is_admin": user.is_admin}
     )
+    refresh_token = AuthService().create_refresh_token({"user_id": user.id})
     response.set_cookie("access_token", access_token)
-    return {"access_token": access_token}
+    response.set_cookie("refresh_token", refresh_token)
+    return TokenInfo(access_token=access_token, refresh_token=refresh_token)
 
 
 @router.post("/logout")
@@ -52,6 +55,7 @@ async def logout(
     response: Response,
 ):
     response.delete_cookie("access_token")
+    response.delete_cookie("refresh_token")
     return {"status": "ok"}
 
 
@@ -61,3 +65,17 @@ async def get_me(
     db: DbDep,
 ):
     return await db.users.get_one_or_none(id=user_id)
+
+
+@router.post("/refresh")
+async def refresh_token(
+    db: DbDep,
+    user_id: UserIdDap,
+    response: Response,
+):
+    user = await db.users.get_one_or_none(id=user_id)
+    access_token = AuthService().create_access_token(
+        {"user_id": user.id, "is_admin": user.is_admin}
+    )
+    response.set_cookie("access_token", access_token)
+    return {"status": "ok"}
