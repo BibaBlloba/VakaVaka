@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Body, Depends, HTTPException, Response
 
-from api.api_v1.dependencies import DbDep, UserIdDap, admin_required
+from api.api_v1.dependencies import AdminRequired, DbDep, UserIdDap
 from schemas.users import UserAdd, UserAddRequest, UserLogin
 from services.auth import AuthService
 
@@ -48,6 +48,6 @@ async def login_user(
 async def user_test(
     user_id: UserIdDap,
     db: DbDep,
-    admin=Depends(admin_required),
+    admin: AdminRequired,
 ):
     return await db.users.get_one_or_none(id=user_id)

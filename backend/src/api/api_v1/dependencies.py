@@ -52,4 +52,5 @@ async def admin_required(
     return user.is_admin
 
 
+AdminRequired = Annotated[bool, Depends(admin_required)]
 UserIdDap = Annotated[int, Depends(get_current_user_id)]
