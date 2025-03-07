@@ -1,11 +1,15 @@
 from sqlalchemy import String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from database import Base
+from src.database import Base
 
 
 class TagsOrm(Base):
-    __tablename__ = "vacancies"
+    __tablename__ = "tags"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(30), unique=True)
+    vacancies: Mapped[list["VacanciesOrm"]] = relationship(
+        back_populates="tags",
+        secondary="tags_vacancies",
+    )
