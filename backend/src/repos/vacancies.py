@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from sqlalchemy import insert, select
+from sqlalchemy.orm import selectinload
 
 from repos.mappers.mappers import VacanciesDataMapper
 from src.models.vacancies import VacanciesOrm
@@ -11,7 +12,11 @@ class VacanciesRepository(BaseRepository):
     mapper = VacanciesDataMapper
 
     async def get_filtered(self, **filter_by):
-        query = select(self.model).filter_by(**filter_by)
+        query = (
+            select(self.model)
+            .options(selectinload(self.model.tags))
+            .filter_by(**filter_by)
+        )
         result = await self.session.execute(query)
         return [
             self.mapper.map_to_domain_entity(model) for model in result.scalars().all()

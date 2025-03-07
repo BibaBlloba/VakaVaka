@@ -1,4 +1,4 @@
-from schemas.tags import Tag
+from schemas.tags import Tag, TagsVacancies
 from schemas.users import User
 from schemas.vacancies import Vacancy
 from src.models.tags import TagsOrm
@@ -20,3 +20,8 @@ class VacanciesDataMapper(DataMapper):
 class UsersDataMapper(DataMapper):
     db_model = UsersOrm
     schema = User
+
+
+class TagsVacanciesDataMapper(DataMapper):
+    db_model = TagsVacanciesOrm
+    schema = TagsVacancies

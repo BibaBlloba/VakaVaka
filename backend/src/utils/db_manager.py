@@ -1,4 +1,5 @@
 from src.repos.tags import TagsRepository
+from src.repos.tags_vacancies import TagsVacanciesRepository
 from src.repos.users import UsersRepository
 from src.repos.vacancies import VacanciesRepository
 
@@ -14,6 +15,7 @@ class DbManager:
         self.tags = TagsRepository(self.session)
         self.vacancies = VacanciesRepository(self.session)
         self.users = UsersRepository(self.session)
+        self.tags_vacancies = TagsVacanciesRepository(self.session)
 
         return self
 
