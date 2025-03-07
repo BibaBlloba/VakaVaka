@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from sqlalchemy.exc import IntegrityError
 
-from api.api_v1.dependencies import DbDep, UserIdDap
+from api.api_v1.dependencies import (DbDep, PaginationDap, UserIdDap,
+                                     VacanciesFiltersDap)
 from schemas.tags import TagsVacanciesAdd
 from schemas.vacancies import VacancyAdd, VacancyAddRequest
 
@@ -9,8 +10,27 @@ router = APIRouter(prefix="/vacancies", tags=["Vacancies"])
 
 
 @router.get("")
-async def get_vacancies(db: DbDep):
-    return await db.vacancies.get_filtered()
+async def get_vacancies(
+    db: DbDep,
+    pagination: PaginationDap,
+    title: str | None = Query(None),
+):
+    per_page = pagination.per_page or 5
+    return await db.vacancies.get_filtered(
+        limit=per_page,
+        offset=per_page * (pagination.page - 1),
+        title=title,
+    )
+
+
+@router.get("{vacancy_id}/tags")
+async def get_vacancies(
+    db: DbDep,
+    pagination: PaginationDap,
+    vacancy_id: int,
+):
+    # TODO: доделать получение тегов по id
+    return await db.tags.get_filtered(id=vacancy_id)
 
 
 @router.post("")

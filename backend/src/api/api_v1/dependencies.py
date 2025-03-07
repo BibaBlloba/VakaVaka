@@ -18,6 +18,14 @@ class PaginationParams(BaseModel):
 PaginationDap = Annotated[PaginationParams, Depends()]
 
 
+class VacanciesFiltersParams(BaseModel):
+    title: Annotated[str | None, Query(None)]
+    tags: Annotated[list | None, Query(None)]
+
+
+VacanciesFiltersDap = Annotated[VacanciesFiltersParams, Depends()]
+
+
 async def get_db():
     async with DbManager(session_factory=async_session_maker) as db:
         yield db

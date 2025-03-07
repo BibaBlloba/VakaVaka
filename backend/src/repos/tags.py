@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from sqlalchemy import insert, select
+from sqlalchemy.orm import selectinload
 
 from repos.mappers.mappers import TagsDataMapper
 from src.models.tags import TagsOrm
