@@ -46,6 +46,8 @@ def get_token(
 def get_current_user_id(token: str = Depends(get_token)):
     try:
         data = AuthService().decode_token(token)
+        if data["type"] != "access":
+            raise HTTPException(status_code=401, detail="Токен не действителен.")
     except jwt.exceptions.DecodeError:
         raise HTTPException(status_code=401, detail="Токен не действителен.")
     return data.get("user_id")
