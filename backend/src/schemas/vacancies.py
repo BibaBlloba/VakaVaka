@@ -1,3 +1,4 @@
+from datetime import date, datetime
 from typing import List
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -24,6 +25,7 @@ class VacancyAdd(BaseModel):
 
 class Vacancy(VacancyAdd):
     id: int
+    created_at: datetime
     tags: list[Tag]
 
     model_config = ConfigDict(from_attributes=True)

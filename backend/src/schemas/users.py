@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel, ConfigDict, EmailStr
 from pydantic_extra_types.phone_numbers import PhoneNumber
 
@@ -31,6 +33,7 @@ class User(BaseModel):
     phone_number: PhoneNumber
     email: EmailStr
     is_admin: bool
+    created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
 

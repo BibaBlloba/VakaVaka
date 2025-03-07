@@ -24,7 +24,10 @@ class VacanciesRepository(BaseRepository):
 
     async def add(self, data: BaseModel):
         add_data_stmt = (
-            insert(self.model).values(**data.model_dump()).returning(self.model)
+            insert(self.model)
+            .options(selectinload(self.model.tags))
+            .values(**data.model_dump())
+            .returning(self.model)
         )
         result = await self.session.execute(add_data_stmt)
         model = result.scalars().one()
