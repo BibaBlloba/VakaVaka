@@ -44,10 +44,18 @@ async def login_user(
     return {"access_token": access_token}
 
 
-@router.get("/test")
-async def user_test(
+@router.post("/logout")
+async def logout(
+    user_id: UserIdDap,
+    response: Response,
+):
+    response.delete_cookie("access_token")
+    return {"status": "ok"}
+
+
+@router.get("/me")
+async def get_me(
     user_id: UserIdDap,
     db: DbDep,
-    admin: AdminRequired,
 ):
     return await db.users.get_one_or_none(id=user_id)
