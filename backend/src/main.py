@@ -25,7 +25,7 @@ async def lifespan(app: FastAPI):
     # При выключении/перезагрузки проекта
 
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 app.include_router(auth_router)
 app.include_router(tags_router)
 app.include_router(vacancies_router)

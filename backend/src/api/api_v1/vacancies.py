@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Query
+from fastapi_cache.decorator import cache
 from sqlalchemy.exc import IntegrityError
 
 from api.api_v1.dependencies import (DbDep, PaginationDap, UserIdDap,
@@ -10,6 +11,7 @@ router = APIRouter(prefix="/vacancies", tags=["Vacancies"])
 
 
 @router.get("")
+@cache(expire=100)
 async def get_vacancies(
     db: DbDep,
     pagination: PaginationDap,
@@ -28,7 +30,7 @@ async def get_vacancies(
 
 
 @router.get("{vacancy_id}/tags")
-async def get_vacancies(
+async def get_tags(
     db: DbDep,
     pagination: PaginationDap,
     vacancy_id: int,
