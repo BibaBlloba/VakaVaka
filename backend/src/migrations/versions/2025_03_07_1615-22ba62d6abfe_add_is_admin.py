@@ -1,8 +1,8 @@
-"""init
+"""add is_admin
 
-Revision ID: 3c3ffb88617b
+Revision ID: 22ba62d6abfe
 Revises:
-Create Date: 2025-03-07 13:19:56.713050
+Create Date: 2025-03-07 16:15:54.980830
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "3c3ffb88617b"
+revision: str = "22ba62d6abfe"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -39,6 +39,7 @@ def upgrade() -> None:
         sa.Column("age", sa.Integer(), nullable=False),
         sa.Column("phone_number", sa.String(length=20), nullable=False),
         sa.Column("email", sa.String(length=20), nullable=False),
+        sa.Column("is_admin", sa.Boolean(), nullable=False),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("email"),
         sa.UniqueConstraint("login"),

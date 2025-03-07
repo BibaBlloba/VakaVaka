@@ -1,7 +1,11 @@
+from datetime import date, datetime
+from typing import List
+
 from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.database import Base
+from src.utils.time_utils import lazy_utc_now
 
 
 class VacanciesOrm(Base):
@@ -13,12 +17,13 @@ class VacanciesOrm(Base):
     full_description: Mapped[str] = mapped_column(String(10000))
     price: Mapped[int] = mapped_column()
     location: Mapped[str] = mapped_column(String(100))
-    tags: Mapped[list["TagsOrm"]] = relationship(
+    created_at: Mapped[datetime] = mapped_column(default=lazy_utc_now)
+    tags: Mapped[List["TagsOrm"] | None] = relationship(
         back_populates="vacancies",
         secondary="tags_vacancies",
         cascade="all",
     )
-    users: Mapped[list["UsersOrm"]] = relationship(
+    users: Mapped[List["UsersOrm"] | None] = relationship(
         back_populates="vacancies",
         secondary="users_vacancies",
         cascade="all",

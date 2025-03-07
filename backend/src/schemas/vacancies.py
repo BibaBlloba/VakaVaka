@@ -1,7 +1,18 @@
+from datetime import date, datetime
+from typing import List
+
 from pydantic import BaseModel, ConfigDict, Field
 
-from src.schemas.tags import Tag
-from src.schemas.users import User
+from schemas.tags import Tag
+
+
+class VacancyAddRequest(BaseModel):
+    title: str
+    short_description: str
+    full_description: str
+    price: int
+    location: str = Field("Без местоположения")
+    tags: list[int] = []
 
 
 class VacancyAdd(BaseModel):
@@ -10,12 +21,12 @@ class VacancyAdd(BaseModel):
     full_description: str
     price: int
     location: str = Field("Без местоположения")
-    tags: list[Tag]
-    users: list[User]
 
 
 class Vacancy(VacancyAdd):
     id: int
+    created_at: datetime
+    tags: list[Tag]
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -26,5 +37,3 @@ class VacancyPatchRequest(BaseModel):
     full_description: str | None = Field(None)
     price: int | None = Field(None)
     location: str | None = Field(None)
-    tags: list[Tag] | None
-    users: list[User] | None
