@@ -1,6 +1,8 @@
+from typing import List
+
 from pydantic import BaseModel, ConfigDict, Field
 
-from src.schemas.tags import Tag
+from src.schemas.tags import Tag, TagAdd
 from src.schemas.users import User
 
 
@@ -10,8 +12,7 @@ class VacancyAdd(BaseModel):
     full_description: str
     price: int
     location: str = Field("Без местоположения")
-    tags: list[Tag]
-    users: list[User]
+    tags: list[int] = []
 
 
 class Vacancy(VacancyAdd):
