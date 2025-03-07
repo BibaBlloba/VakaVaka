@@ -12,7 +12,13 @@ class VacanciesRepository(BaseRepository):
     mapper = VacanciesDataMapper
 
     async def get_filtered(
-        self, limit: int, offset: int, title: str | None = None, **filter_by
+        self,
+        limit: int,
+        offset: int,
+        title: str | None = None,
+        min_price: int | None = None,
+        max_price: int | None = None,
+        **filter_by,
     ):
         query = (
             select(self.model)
@@ -26,6 +32,12 @@ class VacanciesRepository(BaseRepository):
             query = query.filter(
                 func.lower(self.model.title).contains(title.strip().lower())
             )
+
+        if min_price:
+            query = query.filter(self.model.price >= min_price)
+
+        if max_price:
+            query = query.filter(self.model.price <= max_price)
 
         result = await self.session.execute(query)
         return [

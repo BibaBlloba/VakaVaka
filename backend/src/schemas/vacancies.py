@@ -12,7 +12,7 @@ class VacancyAddRequest(BaseModel):
     full_description: str
     price: int
     location: str = Field("Без местоположения")
-    tags: list[int] = []
+    tags: list[int] | None = []
 
 
 class VacancyAdd(BaseModel):

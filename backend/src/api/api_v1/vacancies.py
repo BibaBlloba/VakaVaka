@@ -14,12 +14,16 @@ async def get_vacancies(
     db: DbDep,
     pagination: PaginationDap,
     title: str | None = Query(None),
+    min_price: int | None = Query(None),
+    max_price: int | None = Query(None),
 ):
     per_page = pagination.per_page or 5
     return await db.vacancies.get_filtered(
         limit=per_page,
         offset=per_page * (pagination.page - 1),
         title=title,
+        min_price=min_price,
+        max_price=max_price,
     )
 
 
@@ -46,9 +50,11 @@ async def create_vacancy(
     tags_vacancies_data = [
         TagsVacanciesAdd(vacancy_id=result.id, tag_id=t_id) for t_id in data.tags
     ]
-    try:
-        await db.tags_vacancies.add_bulk(tags_vacancies_data)
-    except IntegrityError:
-        raise HTTPException(400, detail="tags not found")
+    if tags_vacancies_data:
+        try:
+            await db.tags_vacancies.add_bulk(tags_vacancies_data)
+        except IntegrityError:
+            raise HTTPException(400, detail="tags not found")
 
     await db.commit()
+    return result
