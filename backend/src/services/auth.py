@@ -15,7 +15,18 @@ class AuthService:
         expire = datetime.now(timezone.utc) + timedelta(
             minutes=settings.JWT_ACCESS_TOKEN_EXIPRE_MINUTES
         )
-        to_encode.update({"exp": expire})
+        to_encode.update({"exp": expire, "type": "access"})
+        encoded_jwt = jwt.encode(
+            to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM
+        )
+        return encoded_jwt
+
+    def create_refresh_token(self, data: dict):
+        to_encode = data.copy()
+        expire = datetime.now(timezone.utc) + timedelta(
+            minutes=settings.JWT_REFRESH_TOKEN_EXIPRE_MINUTES
+        )
+        to_encode.update({"exp": expire, "type": "refresh"})
         encoded_jwt = jwt.encode(
             to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM
         )
