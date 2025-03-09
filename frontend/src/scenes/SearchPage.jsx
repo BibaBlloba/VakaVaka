@@ -6,13 +6,13 @@ import VacanciesList from '../components/VacanciesList';
 const SearchPage = () => {
   return (
     <div className='text-black flex flex-col items-stretch mt-20 gap-5'>
-      <div className='border-1 flex justify-start items-center gap-10 mx-[200px]'>
+      <div className='flex justify-start items-center gap-10 mx-[10%]'>
         <Input size='large' placeholder='Поиск по вакансиям' prefix={<IoIosSearch />} />
         <Button color='primary' variant='solid' shape='round'>
           <p className='font-[400] mx-5'>Поиск</p>
         </Button>
       </div>
-      <div className='flex border-1 justify-center gap-20'>
+      <div className='flex justify-center gap-20'>
         <div>Filters</div>
         <VacanciesList />
       </div>
