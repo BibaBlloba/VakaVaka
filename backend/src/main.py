@@ -6,6 +6,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 import uvicorn
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 
@@ -29,6 +30,13 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(auth_router)
 app.include_router(tags_router)
 app.include_router(vacancies_router)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 if __name__ == "__main__":
     uvicorn.run("main:app", reload=True)
