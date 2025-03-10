@@ -28,6 +28,20 @@ async def get_vacancies(
     )
 
 
+@router.get("/{id}")
+async def get_vacancy_by_id(
+    id: int,
+    db: DbDep,
+    pagination: PaginationDap,
+):
+    per_page = pagination.per_page or 5
+    return await db.vacancies.get_filtered(
+        id=id,
+        limit=per_page,
+        offset=per_page * (pagination.page - 1),
+    )
+
+
 @router.get("{vacancy_id}/tags")
 async def get_tags(
     db: DbDep,
