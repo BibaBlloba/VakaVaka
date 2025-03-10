@@ -1,6 +1,8 @@
+from src.repos.roles import RolesRepository
 from src.repos.tags import TagsRepository
 from src.repos.tags_vacancies import TagsVacanciesRepository
 from src.repos.users import UsersRepository
+from src.repos.users_roles import UserRolesRepository
 from src.repos.vacancies import VacanciesRepository
 
 
@@ -16,6 +18,8 @@ class DbManager:
         self.vacancies = VacanciesRepository(self.session)
         self.users = UsersRepository(self.session)
         self.tags_vacancies = TagsVacanciesRepository(self.session)
+        self.users_roles = UserRolesRepository(self.session)
+        self.roles = RolesRepository(self.session)
 
         return self
 

@@ -37,7 +37,7 @@ function Vacancy() {
   }
 
   return (
-    <div className='text-black flex justify-around gap-10 mt-10'>
+    <div className='text-black flex justify-between gap-10 mt-10 mx-[30%]'>
       <div className='flex flex-col gap-10'>
         <div className='border-1 border-[#D1D5DB] rounded-2xl w-[600px] min-h-[100px] p-5 flex flex-col gap-3'>
           <p className='text-4xl font-[700]'>{data.title}</p>
@@ -58,7 +58,6 @@ function Vacancy() {
               </>
             )
           })}
-          {/* {data.full_description} */}
         </div>
         <div className=''>
           <p className='text-3xl font-[600px] mb-5'>Ключевые навыки</p>

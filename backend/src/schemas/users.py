@@ -3,6 +3,8 @@ from datetime import datetime
 from pydantic import BaseModel, ConfigDict, EmailStr
 from pydantic_extra_types.phone_numbers import PhoneNumber
 
+from schemas.roles import Role
+
 
 class UserAddRequest(BaseModel):
     login: str
@@ -34,11 +36,23 @@ class User(BaseModel):
     email: EmailStr
     is_admin: bool
     created_at: datetime
+    roles: list[Role]
 
     model_config = ConfigDict(from_attributes=True)
 
 
 class UserLogin(BaseModel):
-    login: str | None
-    email: EmailStr | None
+    login: str | None = None
+    email: EmailStr | None = None
     password: str
+
+
+class UsersRolesAdd(BaseModel):
+    user_id: int
+    role_id: int
+
+
+class UsersRoles(UsersRolesAdd):
+    id: int
+
+    model_config = ConfigDict(from_attributes=True)

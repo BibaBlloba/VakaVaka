@@ -2,6 +2,7 @@ from fastapi import HTTPException
 from pydantic import BaseModel, EmailStr
 from sqlalchemy import insert, select
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import selectinload
 
 from repos.mappers.mappers import UsersDataMapper
 from src.models.users import UsersOrm
@@ -19,15 +20,26 @@ class UsersRepository(BaseRepository):
         login: str | None = None,
     ):
         if email:
-            query = select(self.model).filter_by(email=email)
+            query = (
+                select(self.model)
+                .options(selectinload(self.model.roles))
+                .filter_by(email=email)
+            )
         else:
-            query = select(self.model).filter_by(login=login)
+            query = (
+                select(self.model)
+                .options(selectinload(self.model.roles))
+                .filter_by(login=login)
+            )
         result = await self.session.execute(query)
         return result.scalars().one_or_none()
 
     async def add(self, data: BaseModel):
         add_data_stmt = (
-            insert(self.model).values(**data.model_dump()).returning(self.model)
+            insert(self.model)
+            .options(selectinload(self.model.roles))
+            .values(**data.model_dump())
+            .returning(self.model)
         )
         try:
             result = await self.session.execute(add_data_stmt)
@@ -36,3 +48,15 @@ class UsersRepository(BaseRepository):
 
         model = result.scalars().one()
         return self.mapper.map_to_domain_entity(model)
+
+    async def get_one_or_none(self, **filter_by):
+        query = (
+            select(self.model)
+            .options(selectinload(self.model.roles))
+            .filter_by(**filter_by)
+        )
+        result = await self.session.execute(query)
+        res = result.scalars().one_or_none()
+        if res is None:
+            return None
+        return self.mapper.map_to_domain_entity(res)

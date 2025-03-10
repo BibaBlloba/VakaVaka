@@ -1,9 +1,11 @@
-from typing import Annotated
+from typing import Annotated, List
 
 import jwt
 from fastapi import Depends, HTTPException, Query, Request
 from pydantic import BaseModel
 
+from schemas.auth_tokens import TokenRoles
+from src.config import settings
 from src.database import async_session_maker
 from src.models.users import UsersOrm
 from src.services.auth import AuthService
@@ -51,6 +53,26 @@ def get_current_user_id(token: str = Depends(get_token)):
     except jwt.exceptions.DecodeError:
         raise HTTPException(status_code=401, detail="Токен не действителен.")
     return data.get("user_id")
+
+
+async def get_current_user_roles(token: str = Depends(get_token)):
+    credentials_exception = HTTPException(
+        401,
+        detail="Could not validate credentials",
+    )
+    payload = AuthService().decode_token(token)
+    roles: List[str] = payload.get("roles", [])
+    token_data = TokenRoles(roles=roles)
+    return token_data
+
+
+def has_role(required_role: str):
+    def role_checker(token_data: TokenRoles = Depends(get_current_user_roles)):
+        if required_role not in token_data.roles:
+            raise HTTPException(status_code=403, detail="Not enough permissions")
+        return token_data
+
+    return role_checker
 
 
 async def admin_required(

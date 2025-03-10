@@ -1,11 +1,17 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi_cache.decorator import cache
 from sqlalchemy.exc import IntegrityError
-from src.init import redis_manager
 
-from api.api_v1.dependencies import AdminRequired, DbDep, PaginationDap, UserIdDap
+from api.api_v1.dependencies import (
+    AdminRequired,
+    DbDep,
+    PaginationDap,
+    UserIdDap,
+    has_role,
+)
 from schemas.tags import TagsVacanciesAdd
 from schemas.vacancies import VacancyAdd, VacancyAddRequest, VacancyPatchRequest
+from src.init import redis_manager
 
 router = APIRouter(prefix="/vacancies", tags=["Vacancies"])
 
@@ -58,6 +64,7 @@ async def create_vacancy(
     db: DbDep,
     user_id: UserIdDap,
     data: VacancyAddRequest,
+    organization=Depends(has_role("organization")),
 ):
 
     _vacancy_data = VacancyAdd(**data.model_dump())
