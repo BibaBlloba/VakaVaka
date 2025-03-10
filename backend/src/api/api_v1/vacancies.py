@@ -1,16 +1,17 @@
 from fastapi import APIRouter, HTTPException, Query
 from fastapi_cache.decorator import cache
 from sqlalchemy.exc import IntegrityError
+from src.init import redis_manager
 
-from api.api_v1.dependencies import DbDep, PaginationDap, UserIdDap
+from api.api_v1.dependencies import AdminRequired, DbDep, PaginationDap, UserIdDap
 from schemas.tags import TagsVacanciesAdd
-from schemas.vacancies import VacancyAdd, VacancyAddRequest
+from schemas.vacancies import VacancyAdd, VacancyAddRequest, VacancyPatchRequest
 
 router = APIRouter(prefix="/vacancies", tags=["Vacancies"])
 
 
 @router.get("")
-@cache(expire=100)
+@cache(namespace="vacancies", expire=100)
 async def get_vacancies(
     db: DbDep,
     pagination: PaginationDap,
@@ -71,5 +72,18 @@ async def create_vacancy(
         except IntegrityError:
             raise HTTPException(400, detail="tags not found")
 
+    await redis_manager.clear_namespace("vacancies")
+
     await db.commit()
     return result
+
+
+@router.patch("/{id}")
+async def patch_vacancy(
+    id: int,
+    db: DbDep,
+    admin: AdminRequired,
+    data: VacancyPatchRequest,
+):
+    await db.vacancies.edit(exclude_unset=True, data=data, id=id)
+    await db.commit()

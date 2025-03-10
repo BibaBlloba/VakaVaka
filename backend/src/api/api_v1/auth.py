@@ -11,7 +11,23 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 @router.post("/register")
 async def register_user(
     db: DbDep,
-    data: UserAddRequest = Body(),
+    data: UserAddRequest = Body(
+        openapi_examples={
+            "1": {
+                "summary": "user",
+                "description": "Test user",
+                "value": {
+                    "login": "string",
+                    "password": "string",
+                    "first_name": "string",
+                    "last_name": "string",
+                    "age": 0,
+                    "phone_number": "+79119119191",
+                    "email": "user@example.com",
+                },
+            }
+        }
+    ),
 ):
     _data_without_passwd = data.model_dump()
     _data_without_passwd.pop("password")

@@ -14,7 +14,7 @@ const SearchPage = () => {
       </div>
       <div className='flex justify-center gap-20'>
         <div>Filters</div>
-        <VacanciesList />
+        <VacanciesList searchTitle={"asd"} />
       </div>
     </div>
   )
