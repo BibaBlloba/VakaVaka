@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import PriceNumber from '../components/PriceNumber'
 import { MdCurrencyRuble } from 'react-icons/md'
 import { Button } from 'antd'
+import DateFormatter from '../components/DateFormatter'
 
 function Vacancy() {
 
@@ -45,6 +46,7 @@ function Vacancy() {
             <p className='text-xl'>Зп: {<PriceNumber number={data.price} />}</p>
             <MdCurrencyRuble size={20} />
           </div>
+          <DateFormatter isoDate={data.created_at} />
           <div className='flex gap-5'>
             <Button type='primary' shape='round'>Откликнуться</Button>
             <Button variant='outlined' color='primary' shape='round'>Контакты</Button>
