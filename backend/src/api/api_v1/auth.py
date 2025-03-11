@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Body, Depends, HTTPException, Response
 
-from api.api_v1.dependencies import AdminRequired, DbDep, UserIdDap
+from api.api_v1.dependencies import AdminRequired, DbDep, LoginAccessToken, UserIdDap
 from schemas.auth_tokens import TokenInfo
 from schemas.roles import RoleAdd
 from schemas.users import UserAdd, UserAddRequest, UserLogin, UsersRolesAdd
@@ -63,51 +63,28 @@ async def register_user(
     return result
 
 
-@router.post("/login")
-async def login_user(
+@router.post("/token")
+async def login_for_access_token(
     db: DbDep,
-    response: Response,
-    data: UserLogin = Body(
-        openapi_examples={
-            "1": {
-                "summary": "user",
-                "description": "Test user",
-                "value": {
-                    "login": "string",
-                    "password": "string",
-                },
-            },
-            "2": {
-                "summary": "organization",
-                "description": "organization  user",
-                "value": {
-                    "login": "Org",
-                    "password": "string",
-                },
-            },
-        }
-    ),
-):
-    user = await db.users.get_uesr_with_hashedPwd(**data.model_dump())
+    form_data=LoginAccessToken,
+) -> TokenInfo:
+    user = await db.users.get_uesr_with_hashedPwd(form_data.login, form_data.password)
     if not user:
         raise HTTPException(
-            401, detail="Пользователь с таким email или login не зарегестрирован."
+            401,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
         )
-
-    if not AuthService().verify_password(data.password, user.hashed_password):
-        raise HTTPException(status_code=401, detail="Пароль неверный")
-
     access_token = AuthService().create_access_token(
         {
             "user_id": user.id,
             "is_admin": user.is_admin,
-            "roles": [role.title for role in user.roles],
+            "roles": [role for role in user.roles],
         }
     )
-    refresh_token = AuthService().create_refresh_token({"user_id": user.id})
-    response.set_cookie("access_token", access_token)
-    response.set_cookie("refresh_token", refresh_token)
-    return TokenInfo(access_token=access_token, refresh_token=refresh_token)
+    return TokenInfo(
+        access_token=access_token, refresh_token="asd", token_type="bearer"
+    )
 
 
 @router.post("/logout")

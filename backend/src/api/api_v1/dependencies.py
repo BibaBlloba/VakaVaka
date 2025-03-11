@@ -3,6 +3,7 @@ from typing import Annotated, List
 import jwt
 from fastapi import Depends, HTTPException, Query, Request
 from pydantic import BaseModel
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 from schemas.auth_tokens import TokenRoles
 from src.config import settings
@@ -86,3 +87,5 @@ async def admin_required(
 
 AdminRequired = Annotated[bool, Depends(admin_required)]
 UserIdDap = Annotated[int, Depends(get_current_user_id)]
+
+LoginAccessToken = (Annotated[OAuth2PasswordRequestForm, Depends()],)

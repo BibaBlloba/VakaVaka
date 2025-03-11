@@ -1,8 +1,8 @@
 """add roles
 
-Revision ID: 12226d06a4b2
+Revision ID: ab37930546db
 Revises:
-Create Date: 2025-03-10 21:52:53.943257
+Create Date: 2025-03-11 10:00:20.810935
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "12226d06a4b2"
+revision: str = "ab37930546db"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
