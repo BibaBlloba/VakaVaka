@@ -7,6 +7,7 @@ const VacanciesList = ({ searchTitle }) => {
 
   const [vacancies, setVacancies] = useState()
   const [loading, setLoading] = useState(true)
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const getVacancies = async () => {
@@ -17,7 +18,7 @@ const VacanciesList = ({ searchTitle }) => {
         }
       }
       try {
-        const response = await fetch('http://localhost:8000/vacancies?page=1&per_page=10', requestOptions)
+        const response = await fetch(`${API_URL}/vacancies?page=1&per_page=10`, requestOptions)
         const resp_json = await response.json()
         setVacancies(resp_json)
       } catch (err) {
