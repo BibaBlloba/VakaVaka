@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 
 import jwt
-from fastapi import HTTPException
+from fastapi import Form, HTTPException
 from passlib.context import CryptContext
 
 from src.config import settings

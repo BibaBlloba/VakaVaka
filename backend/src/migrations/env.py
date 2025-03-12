@@ -5,6 +5,7 @@ from sqlalchemy import engine_from_config, pool
 
 from src.config import settings
 from src.database import Base  # noqa
+from src.models.roles import *
 from src.models.tags import TagsOrm
 from src.models.users import UsersOrm
 from src.models.vacancies import *

@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from sqlalchemy import func, insert, select
+from sqlalchemy import func, insert, select, update
 from sqlalchemy.orm import selectinload
 
 from repos.mappers.mappers import VacanciesDataMapper
@@ -52,5 +52,22 @@ class VacanciesRepository(BaseRepository):
             .returning(self.model)
         )
         result = await self.session.execute(add_data_stmt)
+        model = result.scalars().one()
+        return self.mapper.map_to_domain_entity(model)
+
+    async def edit(
+        self,
+        data: BaseModel,
+        exclude_unset: bool = False,
+        **filter_by,
+    ) -> None:
+        update_stmt = (
+            update(self.model)
+            .filter_by(**filter_by)
+            .options(selectinload(self.model.tags))
+            .values(data.model_dump(exclude_unset=exclude_unset))
+            .returning(self.model)
+        )
+        result = await self.session.execute(update_stmt)
         model = result.scalars().one()
         return self.mapper.map_to_domain_entity(model)

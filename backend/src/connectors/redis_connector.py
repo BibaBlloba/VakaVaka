@@ -52,6 +52,16 @@ class RedisManager:
         """
         await self.client.delete(key)
 
+    async def clear_namespace(self, namespace: str):
+        """
+        Удаление всех ключей, связанных с указанным пространством имен.
+
+        :param namespace: Пространство имен для удаления.
+        """
+        keys = await self.client.keys(f"*:{namespace}:*")
+        if keys:
+            await self.client.delete(*keys)
+
     async def close(self):
         """
         Закрытие подключения к Redis.

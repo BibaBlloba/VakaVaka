@@ -1,9 +1,14 @@
-from typing import Annotated
+from typing import Annotated, List
 
 import jwt
-from fastapi import Depends, HTTPException, Query, Request
+from fastapi import Depends, Form, HTTPException, Query, Request
+from fastapi.security import (HTTPAuthorizationCredentials, HTTPBearer,
+                              OAuth2PasswordBearer, OAuth2PasswordRequestForm)
 from pydantic import BaseModel
 
+from schemas.auth_tokens import TokenRoles
+from schemas.users import User
+from src.config import settings
 from src.database import async_session_maker
 from src.models.users import UsersOrm
 from src.services.auth import AuthService
@@ -53,6 +58,26 @@ def get_current_user_id(token: str = Depends(get_token)):
     return data.get("user_id")
 
 
+async def get_current_user_roles(token: str = Depends(get_token)):
+    credentials_exception = HTTPException(
+        401,
+        detail="Could not validate credentials",
+    )
+    payload = AuthService().decode_token(token)
+    roles: List[str] = payload.get("roles", [])
+    token_data = TokenRoles(roles=roles)
+    return token_data
+
+
+def has_role(required_role: str):
+    def role_checker(token_data: TokenRoles = Depends(get_current_user_roles)):
+        if required_role not in token_data.roles:
+            raise HTTPException(status_code=403, detail="Not enough permissions")
+        return token_data
+
+    return role_checker
+
+
 async def admin_required(
     db: DbDep, user_id: int = Depends(get_current_user_id)
 ) -> bool:
@@ -64,3 +89,46 @@ async def admin_required(
 
 AdminRequired = Annotated[bool, Depends(admin_required)]
 UserIdDap = Annotated[int, Depends(get_current_user_id)]
+
+LoginAccessToken = (Annotated[OAuth2PasswordRequestForm, Depends()],)
+
+
+async def validate_auth_user(
+    db: DbDep,
+    username: str = Form(),
+    password: str = Form(),
+):
+    unauthException = HTTPException(401, detail="Неверный логин или пароль")
+
+    user = await db.users.get_uesr_with_hashedPwd(login=username, password=password)
+    if not user:
+        raise unauthException
+    if not AuthService().verify_password(password, user.hashed_password):
+        raise unauthException
+
+    return user
+
+
+ValidateUserDap = Depends(validate_auth_user)
+
+http_bearer = HTTPBearer()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+
+
+async def get_current_auth_user(
+    db: DbDep,
+    # credentials: HTTPAuthorizationCredentials = Depends(http_bearer),
+    token: str = Depends(oauth2_scheme),
+):
+    # token = credentials.credentials
+    payload = AuthService().decode_token(to_decode=token)
+    print(payload)
+
+    login: str | None = payload.get("login")
+    user_from_db = await db.users.get_uesr_with_hashedPwd(login=login)
+    if not user_from_db:
+        raise HTTPException(401, "Token invalid")
+    return user_from_db
+
+
+GetCurrentUserDap = Depends(get_current_auth_user)
