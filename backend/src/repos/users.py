@@ -15,7 +15,7 @@ class UsersRepository(BaseRepository):
 
     async def get_uesr_with_hashedPwd(
         self,
-        password: str,
+        password: str | None = None,
         email: EmailStr | None = None,
         login: str | None = None,
     ):
@@ -60,3 +60,14 @@ class UsersRepository(BaseRepository):
         if res is None:
             return None
         return self.mapper.map_to_domain_entity(res)
+
+    async def get_filtered(self, **filter_by):
+        query = (
+            select(self.model)
+            .options(selectinload(self.model.roles))
+            .filter_by(**filter_by)
+        )
+        result = await self.session.execute(query)
+        return [
+            self.mapper.map_to_domain_entity(model) for model in result.scalars().all()
+        ]

@@ -1,9 +1,12 @@
-from fastapi import APIRouter, Body, Depends, HTTPException, Response
+from fastapi import APIRouter, Body, Depends, Form, HTTPException, Response
 
-from api.api_v1.dependencies import AdminRequired, DbDep, LoginAccessToken, UserIdDap
+from api.api_v1.dependencies import (AdminRequired, DbDep, GetCurrentUserDap,
+                                     LoginAccessToken, UserIdDap,
+                                     ValidateUserDap)
 from schemas.auth_tokens import TokenInfo
 from schemas.roles import RoleAdd
-from schemas.users import UserAdd, UserAddRequest, UserLogin, UsersRolesAdd
+from schemas.users import (User, UserAdd, UserAddRequest, UserLogin,
+                           UsersRolesAdd)
 from services.auth import AuthService
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
@@ -63,57 +66,30 @@ async def register_user(
     return result
 
 
-@router.post("/token")
+@router.post("/login", response_model=TokenInfo)
 async def login_for_access_token(
-    db: DbDep,
-    form_data=LoginAccessToken,
-) -> TokenInfo:
-    user = await db.users.get_uesr_with_hashedPwd(form_data.login, form_data.password)
-    if not user:
-        raise HTTPException(
-            401,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    access_token = AuthService().create_access_token(
-        {
-            "user_id": user.id,
-            "is_admin": user.is_admin,
-            "roles": [role for role in user.roles],
-        }
-    )
-    return TokenInfo(
-        access_token=access_token, refresh_token="asd", token_type="bearer"
-    )
-
-
-@router.post("/logout")
-async def logout(
-    user_id: UserIdDap,
-    response: Response,
+    user: User = ValidateUserDap,
 ):
-    response.delete_cookie("access_token")
-    response.delete_cookie("refresh_token")
-    return {"status": "ok"}
+    jwt_payload = {
+        "id": user.id,
+        "login": user.login,
+        "email": user.email,
+        "roles": [role.title for role in user.roles],
+    }
+    access_token = AuthService().create_access_token(jwt_payload)
+    return TokenInfo(
+        access_token=access_token,
+        refresh_token="None",
+        token_type="Bearer",
+    )
 
 
 @router.get("/me")
 async def get_me(
-    user_id: UserIdDap,
-    db: DbDep,
+    user: User = GetCurrentUserDap,
 ):
-    return await db.users.get_one_or_none(id=user_id)
-
-
-@router.post("/refresh")
-async def refresh_token(
-    db: DbDep,
-    user_id: UserIdDap,
-    response: Response,
-):
-    user = await db.users.get_one_or_none(id=user_id)
-    access_token = AuthService().create_access_token(
-        {"user_id": user.id, "is_admin": user.is_admin}
-    )
-    response.set_cookie("access_token", access_token)
-    return {"status": "ok"}
+    return {
+        "login": user.login,
+        "email": user.email,
+        "roles": user.roles,
+    }
