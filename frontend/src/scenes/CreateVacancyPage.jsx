@@ -15,6 +15,7 @@ const CreateVacancyPage = () => {
     location: "",
     tags: []
   });
+  const API_URL = import.meta.env.VITE_API_URL;
 
   // TODO: Доделать отправку запроса на создание вакансии
   const onFinish = async (values) => {
@@ -26,7 +27,7 @@ const CreateVacancyPage = () => {
     })
 
     try {
-      const response = await axios.post("http://localhost:8000/vacancies", formData)
+      const response = await axios.post(`${API_URL}/vacancies`, formData)
       console.log(response)
     } catch (error) {
       console.log(error)
@@ -35,7 +36,7 @@ const CreateVacancyPage = () => {
 
   useEffect(() => {
     const getTags = async () => {
-      axios.get("http://localhost:8000/tags")
+      axios.get(`${API_URL}/tags`)
         .then(response => { setTags(response.data) })
         .finally(() => { setLoadingTags(false) })
     }

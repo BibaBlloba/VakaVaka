@@ -10,6 +10,7 @@ function Vacancy() {
   const [data, setData] = useState(null)
   const { id } = useParams()
   const [lines, setLines] = useState(null)
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -19,7 +20,7 @@ function Vacancy() {
           'Content-Type': 'application/json',
         }
       }
-      const response = await fetch(`http://localhost:8000/vacancies/${id}?page=1`, requestOptions)
+      const response = await fetch(`${API_URL}/vacancies/${id}?page=1`, requestOptions)
       const result = await response.json()
 
       result.map((res) => {
