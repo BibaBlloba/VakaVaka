@@ -1,3 +1,4 @@
+import Authorization from "./components/Authorization";
 import Navbar from "./components/Navbar";
 import CreateVacancyPage from "./scenes/CreateVacancyPage";
 import SearchPage from "./scenes/SearchPage";
@@ -16,6 +17,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/search" element={<SearchPage />} />
+          <Route path="/tst" element={<Authorization />} />
           <Route path="/" element={<SearchPage />} />
           <Route path="/vacancy/:id" element={<Vacancy />} />
           <Route path="/create-vacancy" element={<CreateVacancyPage />} />
