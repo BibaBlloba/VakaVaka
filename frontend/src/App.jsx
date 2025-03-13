@@ -1,4 +1,6 @@
+import LoginForm from "./components/LoginForm";
 import Navbar from "./components/Navbar";
+import RegisterForm from "./components/RegisterForm";
 import CreateVacancyPage from "./scenes/CreateVacancyPage";
 import SearchPage from "./scenes/SearchPage";
 import Vacancy from "./scenes/Vacancy";
@@ -16,6 +18,8 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/search" element={<SearchPage />} />
+          <Route path="/test-auth" element={<RegisterForm />} />
+          <Route path="/test-login" element={<LoginForm />} />
           <Route path="/" element={<SearchPage />} />
           <Route path="/vacancy/:id" element={<Vacancy />} />
           <Route path="/create-vacancy" element={<CreateVacancyPage />} />
