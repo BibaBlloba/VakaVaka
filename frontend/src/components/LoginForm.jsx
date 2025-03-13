@@ -9,12 +9,15 @@ import {
 } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import React from "react";
+import { useContext } from "react";
 import dayjs from "dayjs";
 import axios from "axios";
+import { UserContext } from "../context/UserContext";
 
 const LoginForm = () => {
   const { Option } = Select;
   const API_URL = import.meta.env.VITE_API_URL;
+  const [token, setToken] = useContext(UserContext);
 
   const onFinishFailed = async (values) => {
     console.log("Failed:", values);
@@ -25,8 +28,21 @@ const LoginForm = () => {
     const key = "fetchData";
     messageApi.loading({ content: "Loading...", key });
 
+    const data = {
+      grant_type: "password",
+      username: values.username,
+      password: values.password,
+    };
+    const headers = {
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    };
+
     try {
-      const response = await axios.post(`${API_URL}/auth/login`, values);
+      const response = await axios.post(`${API_URL}/auth/login`, data, headers);
+      setToken(response.data.access_token);
       messageApi.success({
         content: "Data fetched successfully!",
         key,
@@ -49,7 +65,7 @@ const LoginForm = () => {
       >
         <Form.Item
           label="Login"
-          name="login"
+          name="username"
           rules={[
             {
               required: true,
