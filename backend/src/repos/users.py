@@ -15,6 +15,7 @@ class UsersRepository(BaseRepository):
 
     async def get_uesr_with_hashedPwd(
         self,
+        id: str | None = None,
         password: str | None = None,
         email: EmailStr | None = None,
         login: str | None = None,
@@ -24,6 +25,12 @@ class UsersRepository(BaseRepository):
                 select(self.model)
                 .options(selectinload(self.model.roles))
                 .filter_by(email=email)
+            )
+        elif id:
+            query = (
+                select(self.model)
+                .options(selectinload(self.model.roles))
+                .filter_by(id=id)
             )
         else:
             query = (
