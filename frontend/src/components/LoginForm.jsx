@@ -44,6 +44,7 @@ const LoginForm = () => {
     try {
       const response = await axios.post(`${API_URL}/auth/login`, data, headers);
       localStorage.setItem("UserToken", response.data.access_token);
+      localStorage.setItem("RefreshToken", response.data.refresh_token);
       setToken(response.data.access_token);
       messageApi.success({
         content: "Data fetched successfully!",

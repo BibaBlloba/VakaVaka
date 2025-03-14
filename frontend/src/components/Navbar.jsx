@@ -54,6 +54,7 @@ const Navbar = () => {
     console.log(e)
     if (e.key == 'logout') {
       localStorage.setItem("UserToken", null);
+      localStorage.setItem("RefreshToken", null);
       window.location.href = "/";
     } else if (e.key == 'login') {
       window.location.href = "/test-auth";
