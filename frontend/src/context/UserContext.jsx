@@ -1,14 +1,15 @@
+import { jwtDecode } from "jwt-decode";
 import React, { Children, createContext, useEffect, useState } from "react";
 
 export const UserContext = createContext();
 
 export const UserProvider = (props) => {
   const [token, setToken] = useState(localStorage.getItem("UserToken"));
+  const [roles, setRoles] = useState(null)
   const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchUser = async () => {
-      console.log(token);
       const requestOptions = {
         method: "GET",
         headers: {
@@ -22,13 +23,18 @@ export const UserProvider = (props) => {
         setToken(null);
       }
       localStorage.setItem("UserToken", token);
-      console.log(data);
     };
+    try {
+      setRoles(jwtDecode(token).roles)
+    } catch {
+      setRoles(null)
+    }
     fetchUser();
+    console.log(roles)
   }, []);
 
   return (
-    <UserContext.Provider value={[token, setToken]}>
+    <UserContext.Provider value={[token, setToken, roles]}>
       {props.children}
     </UserContext.Provider>
   );

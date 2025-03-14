@@ -13,6 +13,7 @@ import { useContext } from "react";
 import dayjs from "dayjs";
 import axios from "axios";
 import { UserContext } from "../context/UserContext";
+import { jwtDecode } from "jwt-decode";
 
 const LoginForm = () => {
   const { Option } = Select;
@@ -42,12 +43,13 @@ const LoginForm = () => {
 
     try {
       const response = await axios.post(`${API_URL}/auth/login`, data, headers);
+      localStorage.setItem("UserToken", response.data.access_token);
       setToken(response.data.access_token);
       messageApi.success({
         content: "Data fetched successfully!",
         key,
         duration: 2,
-      });
+      }).then(window.location.href = "/")
     } catch {
       messageApi.error({ content: "Failed to fetch data", key, duration: 2 });
     }
