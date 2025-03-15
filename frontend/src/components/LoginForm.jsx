@@ -37,6 +37,7 @@ const LoginForm = () => {
     const headers = {
       headers: {
         accept: "application/json",
+        withCredentials: true,
         "Content-Type": "application/x-www-form-urlencoded",
       },
     };

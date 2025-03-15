@@ -26,13 +26,18 @@ async def lifespan(app: FastAPI):
     # При выключении/перезагрузки проекта
 
 
+origins = [
+    "http://localhost",
+    "http://localhost:5173",
+]
+
 app = FastAPI(lifespan=lifespan)
 app.include_router(auth_router)
 app.include_router(tags_router)
 app.include_router(vacancies_router)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

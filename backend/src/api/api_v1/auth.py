@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Body, Depends, Form, HTTPException, Response
+from fastapi import APIRouter, Body, Depends, Form, HTTPException, Response, Request
 
 from api.api_v1.dependencies import (
     AdminRequired,
@@ -72,6 +72,7 @@ async def register_user(
 
 @router.post("/login", response_model=TokenInfo)
 async def login_for_access_token(
+    response: Response,
     user: User = ValidateUserDap,
 ):
     jwt_payload = {
@@ -82,6 +83,9 @@ async def login_for_access_token(
     }
     access_token = AuthService().create_access_token(jwt_payload)
     refresh_token = AuthService().create_refresh_token({"id": user.id})
+    response.set_cookie(
+        "access_token", access_token, secure=False, samesite="lax", httponly=False
+    )
     return TokenInfo(
         access_token=access_token,
         refresh_token=refresh_token,

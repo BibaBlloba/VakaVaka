@@ -21,18 +21,23 @@ const CreateVacancyPage = () => {
   const onFinish = async (values) => {
     console.log(values)
 
-    setFormData({
-      ...formData,
-      ["title"]: values.title,
-    })
+    const data = {
+      "title": values.title,
+      "short_description": values.short_description,
+      "full_description": values.full_description,
+      "price": 0,
+      "location": "asd",
+      "tags": [],
+    }
 
     try {
-      const response = await axios.post(`${API_URL}/vacancies`, formData)
+      const response = await axios.post(`${API_URL}/vacancies`, data, { withCredentials: true })
       console.log(response)
     } catch (error) {
       console.log(error)
     }
   }
+  // }]);
 
   useEffect(() => {
     const getTags = async () => {
