@@ -55,7 +55,7 @@ def get_current_user_id(token: str = Depends(get_token)):
             raise HTTPException(status_code=401, detail="Токен не действителен.")
     except jwt.exceptions.DecodeError:
         raise HTTPException(status_code=401, detail="Токен не действителен.")
-    return data.get("user_id")
+    return data.get("id")
 
 
 async def get_current_user_roles(token: str = Depends(get_token)):

@@ -1,4 +1,4 @@
-import { Form, Input, Select, Button } from "antd";
+import { Form, Input, Select, Button, Slider, Checkbox } from "antd";
 import React, { useEffect, useState } from "react";
 const { TextArea } = Input;
 import axios from 'axios';
@@ -7,6 +7,7 @@ const CreateVacancyPage = () => {
 
   const [tags, setTags] = useState(null)
   const [loadingTags, setLoadingTags] = useState(true)
+  const [price, setPrice] = useState(true)
   const [formData, setFormData] = useState({
     title: "",
     short_description: "",
@@ -25,9 +26,11 @@ const CreateVacancyPage = () => {
       "title": values.title,
       "short_description": values.short_description,
       "full_description": values.full_description,
-      "price": 0,
+      "price": values.isPrice,
+      "min_price": values.isPrice ? values.min_price : 0,
+      "max_price": values.isPrice ? values.max_price : 0,
       "location": "asd",
-      "tags": [],
+      "tags": values.tags,
     }
 
     try {
@@ -64,6 +67,45 @@ const CreateVacancyPage = () => {
             <TextArea rows={10} />
           </Form.Item>
           <Form.Item
+            name="isPrice"
+            valuePropName="checked"
+            label={null}
+          >
+            <Checkbox
+              onChange={() => { setPrice(!price) }}
+            >Указать зарплатную вилку</Checkbox>
+          </Form.Item>
+          <Form.Item
+            label="Зарплатная вилка"
+          >
+            <Form.Item
+              style={{
+                display: 'inline-block',
+                width: 'calc(50% - 8px)',
+              }}
+              name="min_price"
+            >
+              <div className="flex flex-row items-center gap-3">
+                <p>От</p>
+                <Input disabled={price} />
+              </div>
+            </Form.Item>
+
+            <Form.Item
+              style={{
+                display: 'inline-block',
+                width: 'calc(50% - 8px)',
+                margin: '0 8px',
+              }}
+              name="max_price"
+            >
+              <div className="flex flex-row items-center gap-3">
+                <p>До</p>
+                <Input disabled={price} />
+              </div>
+            </Form.Item>
+          </Form.Item>
+          <Form.Item
             label="Ключевые навыки"
             rules={[
               {
@@ -72,12 +114,12 @@ const CreateVacancyPage = () => {
             ]}
             name="tags"
           >
-            <Select mode="multiple" placeholder="Please select favourite colors">
+            <Select mode="multiple" placeholder="Укажите ключевые навыки">
               {loadingTags ? (
                 <Option>Loading...</Option>
               ) : (
                 tags.map((tag, id) => (
-                  <Option key={id} value={tag.title}>{tag.title}</Option>
+                  <Option key={id} value={tag.id}>{tag.title}</Option>
                 ))
               )}
             </Select>
@@ -94,7 +136,7 @@ const CreateVacancyPage = () => {
           </Form.Item>
         </Form>
       </div>
-    </div>
+    </div >
   );
 };
 

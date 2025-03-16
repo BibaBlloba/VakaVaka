@@ -10,7 +10,9 @@ class VacancyAddRequest(BaseModel):
     title: str
     short_description: str
     full_description: str
-    price: int
+    price: bool = Field(False)
+    min_price: int | None
+    max_price: int | None
     location: str = Field("Без местоположения")
     tags: list[int] | None = []
 
@@ -19,7 +21,9 @@ class VacancyAdd(BaseModel):
     title: str
     short_description: str
     full_description: str
-    price: int
+    price: bool = Field(False)
+    min_price: int | None
+    max_price: int | None
     location: str = Field("Без местоположения")
 
 
@@ -35,5 +39,7 @@ class VacancyPatchRequest(BaseModel):
     title: str | None = Field(None)
     short_description: str | None = Field(None)
     full_description: str | None = Field(None)
-    price: int | None = Field(None)
+    price: bool | None = Field(None)
+    min_price: int | None = Field(None)
+    max_price: int | None = Field(None)
     location: str | None = Field(None)

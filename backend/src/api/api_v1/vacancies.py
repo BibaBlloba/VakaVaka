@@ -2,15 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi_cache.decorator import cache
 from sqlalchemy.exc import IntegrityError
 
-from api.api_v1.dependencies import (
-    AdminRequired,
-    DbDep,
-    PaginationDap,
-    UserIdDap,
-    has_role,
-)
+from api.api_v1.dependencies import (AdminRequired, DbDep, PaginationDap,
+                                     UserIdDap, has_role)
 from schemas.tags import TagsVacanciesAdd
-from schemas.vacancies import VacancyAdd, VacancyAddRequest, VacancyPatchRequest
+from schemas.vacancies import (VacancyAdd, VacancyAddRequest,
+                               VacancyPatchRequest)
 from src.init import redis_manager
 
 router = APIRouter(prefix="/vacancies", tags=["Vacancies"])
@@ -25,7 +21,7 @@ async def get_vacancies(
     min_price: int | None = Query(None),
     max_price: int | None = Query(None),
 ):
-    per_page = pagination.per_page or 5
+    per_page = pagination.per_page or 10
     return await db.vacancies.get_filtered(
         limit=per_page,
         offset=per_page * (pagination.page - 1),

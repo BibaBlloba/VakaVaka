@@ -15,7 +15,9 @@ class VacanciesOrm(Base):
     title: Mapped[str] = mapped_column(String(300))
     short_description: Mapped[str] = mapped_column(String(1000))
     full_description: Mapped[str] = mapped_column(String(10000))
-    price: Mapped[int] = mapped_column()
+    price: Mapped[bool] = mapped_column()
+    min_price: Mapped[int | None] = mapped_column()
+    max_price: Mapped[int | None] = mapped_column()
     location: Mapped[str] = mapped_column(String(100))
     created_at: Mapped[datetime] = mapped_column(default=lazy_utc_now)
     tags: Mapped[List["TagsOrm"] | None] = relationship(

@@ -44,7 +44,13 @@ function Vacancy() {
         <div className='border-1 border-[#D1D5DB] rounded-2xl w-[600px] min-h-[100px] p-5 flex flex-col gap-3'>
           <p className='text-4xl font-[700]'>{data.title}</p>
           <div className='flex items-center'>
-            <p className='text-xl'>Зп: {<PriceNumber number={data.price} />}</p>
+            {data.price ?
+              (
+                <p className='text-xl'>Зпшка: {<PriceNumber number={data.min_price} />} - {<PriceNumber number={data.max_price} />}</p>
+              ) : (
+                <div>ЗП НЕ БУТТЕТ!</div>
+              )
+            }
             <MdCurrencyRuble size={20} />
           </div>
           <DateFormatter isoDate={data.created_at} />

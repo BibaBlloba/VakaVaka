@@ -1,16 +1,13 @@
-from fastapi import APIRouter, Body, Depends, Form, HTTPException, Response, Request
+from fastapi import (APIRouter, Body, Depends, Form, HTTPException, Request,
+                     Response)
 
-from api.api_v1.dependencies import (
-    AdminRequired,
-    DbDep,
-    GetCurrentUserDap,
-    LoginAccessToken,
-    UserIdDap,
-    ValidateUserDap,
-)
+from api.api_v1.dependencies import (AdminRequired, DbDep, GetCurrentUserDap,
+                                     LoginAccessToken, UserIdDap,
+                                     ValidateUserDap)
 from schemas.auth_tokens import TokenInfo
 from schemas.roles import RoleAdd
-from schemas.users import User, UserAdd, UserAddRequest, UserLogin, UsersRolesAdd
+from schemas.users import (User, UserAdd, UserAddRequest, UserLogin,
+                           UsersRolesAdd)
 from services.auth import AuthService
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
@@ -62,7 +59,10 @@ async def register_user(
     result = await db.users.add(hashed_user_data)
 
     if organization:
-        organization_role = await db.roles.get_one_or_none(title="organization")
+        try:
+            organization_role = await db.roles.get_one_or_none(title="organization")
+        except:
+            raise HTTPException(401, detail="No organization role")
         roles_data = UsersRolesAdd(user_id=result.id, role_id=organization_role.id)
         await db.users_roles.add(roles_data)
 
@@ -131,3 +131,14 @@ async def refresh_toker(
         refresh_token=refresh_token,
         token_type="Bearer",
     )
+
+
+@router.post("/role")
+async def add_role(
+    db: DbDep,
+    admin: AdminRequired,
+    data: RoleAdd = Body(),
+):
+    result = await db.roles.add(data)
+    await db.commit()
+    return result

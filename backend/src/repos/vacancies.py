@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from sqlalchemy import func, insert, select, update
+from sqlalchemy import desc, func, insert, select, update
 from sqlalchemy.orm import selectinload
 
 from repos.mappers.mappers import VacanciesDataMapper
@@ -26,6 +26,7 @@ class VacanciesRepository(BaseRepository):
             .filter_by(**filter_by)
             .limit(limit)
             .offset(offset)
+            .order_by(desc(self.model.created_at))
         )
 
         if title:
