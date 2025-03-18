@@ -12,7 +12,7 @@ const SearchPage = () => {
           <p className='font-[400] mx-5'>Поиск</p>
         </Button>
       </div>
-      <div className='flex justify-center gap-20'>
+      <div className='flex justify-center gap-20 mb-16'>
         <div>Filters</div>
         <VacanciesList searchTitle={"asd"} />
       </div>

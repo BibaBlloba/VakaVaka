@@ -10,6 +10,7 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
+import Footer from "./scenes/Footer";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/vacancy/:id" element={<Vacancy />} />
           <Route path="/create-vacancy" element={<CreateVacancyPage />} />
         </Routes>
+        <Footer />
       </BrowserRouter>
     </div>
   );
