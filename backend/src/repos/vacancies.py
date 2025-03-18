@@ -35,10 +35,10 @@ class VacanciesRepository(BaseRepository):
             )
 
         if min_price:
-            query = query.filter(self.model.price >= min_price)
+            query = query.filter(self.model.min_price >= min_price)
 
         if max_price:
-            query = query.filter(self.model.price <= max_price)
+            query = query.filter(self.model.max_price <= max_price)
 
         result = await self.session.execute(query)
         return [
