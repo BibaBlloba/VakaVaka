@@ -2,6 +2,7 @@ import React from 'react'
 import { Input, Button } from 'antd'
 import { IoIosSearch } from 'react-icons/io';
 import VacanciesList from '../components/VacanciesList';
+import Filters from '../components/Filters';
 
 const SearchPage = () => {
   return (
@@ -12,8 +13,8 @@ const SearchPage = () => {
           <p className='font-[400] mx-5'>Поиск</p>
         </Button>
       </div>
-      <div className='flex justify-center gap-20 mb-16'>
-        <div>Filters</div>
+      <div className='flex gap-20 mb-16 mx-[20%]'>
+        <Filters />
         <VacanciesList searchTitle={"asd"} />
       </div>
     </div>

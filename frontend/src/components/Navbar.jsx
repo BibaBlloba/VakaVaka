@@ -9,6 +9,13 @@ import { ImProfile } from "react-icons/im";
 const Navbar = () => {
   const [token, setToken, roles] = useContext(UserContext);
 
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+  };
+
   const handleResume = () => {
     if (token) {
       window.location.href = "/create-resume"
@@ -18,7 +25,8 @@ const Navbar = () => {
   }
 
   const handleVacancy = () => {
-    if (token && roles.includes("organization")) {
+    console.log(`access_token: ${getCookie("access_token")}`)
+    if (token && roles.includes("organization") && (getCookie("access_token") === null)) {
       window.location.href = "/create-vacancy"
     } else if (token && !roles.includes("organization")) {
       window.location.href = "/organization-request"
