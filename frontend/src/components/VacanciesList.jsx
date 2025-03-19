@@ -31,10 +31,12 @@ const VacanciesList = ({ searchTitle }) => {
 
   const handleNextPage = () => {
     setCurrentPage((prevPage) => prevPage + 1);
+    console.log(vacancies)
   };
 
   const handlePrevPage = () => {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+    console.log(vacancies)
   };
 
   useEffect(() => {
@@ -74,24 +76,25 @@ const VacanciesList = ({ searchTitle }) => {
   if (loading) return <div>Loading...</div>
 
   return (
-    <div className='flex flex-col items-center gap-4'>
+    <div className='flex flex-col items-center gap-4 min-h-screen'>
       <p>Вакансии</p>
       <div className='flex flex-row gap-4 items-center'>
         <Button onClick={handlePrevPage} disabled={currentPage === 1}>
           <IoMdArrowRoundBack size={20} />
         </Button>
         <p>{currentPage}</p>
-        <Button onClick={handleNextPage}>
+        <Button onClick={handleNextPage} disabled={vacancies.length === 0 | vacancies.length <= 10}>
           <IoMdArrowRoundForward size={20} />
         </Button>
       </div>
       <div className='flex flex-col gap-2'>
-        {vacancies &&
+        {vacancies.length != 0 ? (
           vacancies.map((vacancy, id) => (
             <div key={id}>
               <Vacancy title={vacancy.title} short_description={vacancy.short_description} price={vacancy.price} id={vacancy.id} min_price={vacancy.min_price} max_price={vacancy.max_price} />
             </div>
-          ))}
+          ))) : <div>Больше вакансий нет ¯\_(ツ)_/¯</div>
+        }
       </div>
     </div>
   )
