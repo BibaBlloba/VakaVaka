@@ -6,6 +6,7 @@ import {
   Select,
   message,
   InputNumber,
+  Checkbox,
 } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import React from "react";
@@ -189,6 +190,9 @@ const RegisterForm = () => {
           ]}
         >
           <Input />
+        </Form.Item>
+        <Form.Item required>
+          <Checkbox>Соглашаюсь на обработку персональных данных</Checkbox>
         </Form.Item>
         <Form.Item label={null}>
           <Button block type="primary" htmlType="submit">

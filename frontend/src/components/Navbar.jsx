@@ -90,7 +90,7 @@ const Navbar = () => {
         <div className="flex items-center gap-10">
           <button className="flex gap-2">
             <IoIosSearch size={25} />
-            <p>Поиск</p>
+            <a href="/">Поиск</a>
           </button>
           <button onClick={handleResume} className="rounded-xl px-3 py-2 bg-gray-700 font-bold hover:cursor-pointer hover:bg-[#404E63] active:scale-90 duration-100">
             <p>Создать резюме</p>
