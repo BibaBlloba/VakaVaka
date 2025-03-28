@@ -2,8 +2,12 @@ from typing import Annotated, List
 
 import jwt
 from fastapi import Depends, Form, HTTPException, Query, Request
-from fastapi.security import (HTTPAuthorizationCredentials, HTTPBearer,
-                              OAuth2PasswordBearer, OAuth2PasswordRequestForm)
+from fastapi.security import (
+    HTTPAuthorizationCredentials,
+    HTTPBearer,
+    OAuth2PasswordBearer,
+    OAuth2PasswordRequestForm,
+)
 from pydantic import BaseModel
 
 from schemas.auth_tokens import TokenRoles
@@ -42,29 +46,29 @@ DbDep = Annotated[DbManager, Depends(get_db)]
 def get_token(
     request: Request,
 ) -> str:
-    token = request.cookies.get("access_token", None)
+    token = request.cookies.get('access_token', None)
     if not token:
-        raise HTTPException(status_code=401, detail="Вы не предоставили токен доступа.")
+        raise HTTPException(status_code=401, detail='Вы не предоставили токен доступа.')
     return token
 
 
 def get_current_user_id(token: str = Depends(get_token)):
     try:
         data = AuthService().decode_token(token)
-        if data["type"] != "access":
-            raise HTTPException(status_code=401, detail="Токен не действителен.")
+        if data['type'] != 'access':
+            raise HTTPException(status_code=401, detail='Токен не действителен.')
     except jwt.exceptions.DecodeError:
-        raise HTTPException(status_code=401, detail="Токен не действителен.")
-    return data.get("id")
+        raise HTTPException(status_code=401, detail='Токен не действителен.')
+    return data.get('id')
 
 
 async def get_current_user_roles(token: str = Depends(get_token)):
     credentials_exception = HTTPException(
         401,
-        detail="Could not validate credentials",
+        detail='Could not validate credentials',
     )
     payload = AuthService().decode_token(token)
-    roles: List[str] = payload.get("roles", [])
+    roles: List[str] = payload.get('roles', [])
     token_data = TokenRoles(roles=roles)
     return token_data
 
@@ -72,7 +76,7 @@ async def get_current_user_roles(token: str = Depends(get_token)):
 def has_role(required_role: str):
     def role_checker(token_data: TokenRoles = Depends(get_current_user_roles)):
         if required_role not in token_data.roles:
-            raise HTTPException(status_code=403, detail="Not enough permissions")
+            raise HTTPException(status_code=403, detail='Not enough permissions')
         return token_data
 
     return role_checker
@@ -98,7 +102,7 @@ async def validate_auth_user(
     username: str = Form(),
     password: str = Form(),
 ):
-    unauthException = HTTPException(401, detail="Неверный логин или пароль")
+    unauthException = HTTPException(401, detail='Неверный логин или пароль')
 
     user = await db.users.get_uesr_with_hashedPwd(login=username, password=password)
     if not user:
@@ -112,7 +116,7 @@ async def validate_auth_user(
 ValidateUserDap = Depends(validate_auth_user)
 
 http_bearer = HTTPBearer()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/auth/login')
 
 
 async def get_current_auth_user(
@@ -124,10 +128,10 @@ async def get_current_auth_user(
     payload = AuthService().decode_token(to_decode=token)
     print(payload)
 
-    login: str | None = payload.get("login")
+    login: str | None = payload.get('login')
     user_from_db = await db.users.get_uesr_with_hashedPwd(login=login)
     if not user_from_db:
-        raise HTTPException(401, "Token invalid")
+        raise HTTPException(401, 'Token invalid')
     return user_from_db
 
 

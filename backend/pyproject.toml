@@ -1,5 +1,10 @@
 [tool.pyright]
-executionEnvironments = [{ root = "backend/src/" }]
-typeCheckingMode = "standard"
+typeCheckingMode = "off"
 venv = ".venv"
 venvPath = "."
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.format]
+quote-style = "single"

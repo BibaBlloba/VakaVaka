@@ -20,15 +20,15 @@ from src.init import redis_manager
 async def lifespan(app: FastAPI):
     # При старте проекта
     await redis_manager.connect()
-    FastAPICache.init(RedisBackend(redis_manager.client), prefix="fastapi-cache")
+    FastAPICache.init(RedisBackend(redis_manager.client), prefix='fastapi-cache')
     yield
     await redis_manager.close()
     # При выключении/перезагрузки проекта
 
 
 origins = [
-    "http://localhost",
-    "http://localhost:5173",
+    'http://localhost',
+    'http://localhost:5173',
 ]
 
 app = FastAPI(lifespan=lifespan)
@@ -39,19 +39,19 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=['*'],
+    allow_headers=['*'],
 )
 
 
-@app.middleware("http")
+@app.middleware('http')
 async def disable_browser_cache(request: Request, call_next):
     response = await call_next(request)
-    response.headers["Cache-Control"] = "no-store, must-revalidate"
-    response.headers["Pragma"] = "no-cache"
-    response.headers["Expires"] = "0"
+    response.headers['Cache-Control'] = 'no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
     return response
 
 
-if __name__ == "__main__":
-    uvicorn.run("main:app", reload=True)
+if __name__ == '__main__':
+    uvicorn.run('main:app', reload=True)

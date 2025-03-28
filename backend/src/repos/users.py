@@ -51,7 +51,7 @@ class UsersRepository(BaseRepository):
         try:
             result = await self.session.execute(add_data_stmt)
         except IntegrityError:
-            raise HTTPException(401, "Пользователь уже зарегестрирован.")
+            raise HTTPException(401, 'Пользователь уже зарегестрирован.')
 
         model = result.scalars().one()
         return self.mapper.map_to_domain_entity(model)

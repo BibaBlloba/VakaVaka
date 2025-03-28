@@ -16,13 +16,13 @@ class Settings(BaseSettings):
 
     @property
     def db_url(self):
-        return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        return f'postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}'
 
     @property
     def redis_url(self):
-        return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}"
+        return f'redis://{self.REDIS_HOST}:{self.REDIS_PORT}'
 
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(env_file='.env', extra='ignore')
 
 
 settings = Settings()

@@ -13,7 +13,7 @@ class VacancyAddRequest(BaseModel):
     price: bool = Field(False)
     min_price: int | None
     max_price: int | None
-    location: str = Field("Без местоположения")
+    location: str = Field('Без местоположения')
     tags: list[int] | None = []
 
 
@@ -24,7 +24,7 @@ class VacancyAdd(BaseModel):
     price: bool = Field(False)
     min_price: int | None
     max_price: int | None
-    location: str = Field("Без местоположения")
+    location: str = Field('Без местоположения')
 
 
 class Vacancy(VacancyAdd):

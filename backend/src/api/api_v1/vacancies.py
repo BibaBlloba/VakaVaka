@@ -2,18 +2,22 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi_cache.decorator import cache
 from sqlalchemy.exc import IntegrityError
 
-from api.api_v1.dependencies import (AdminRequired, DbDep, PaginationDap,
-                                     UserIdDap, has_role)
+from api.api_v1.dependencies import (
+    AdminRequired,
+    DbDep,
+    PaginationDap,
+    UserIdDap,
+    has_role,
+)
 from schemas.tags import TagsVacanciesAdd
-from schemas.vacancies import (VacancyAdd, VacancyAddRequest,
-                               VacancyPatchRequest)
+from schemas.vacancies import VacancyAdd, VacancyAddRequest, VacancyPatchRequest
 from src.init import redis_manager
 
-router = APIRouter(prefix="/vacancies", tags=["Vacancies"])
+router = APIRouter(prefix='/vacancies', tags=['Vacancies'])
 
 
-@router.get("")
-@cache(namespace="vacancies", expire=100)
+@router.get('')
+@cache(namespace='vacancies', expire=100)
 async def get_vacancies(
     db: DbDep,
     pagination: PaginationDap,
@@ -31,7 +35,7 @@ async def get_vacancies(
     )
 
 
-@router.get("/{id}")
+@router.get('/{id}')
 async def get_vacancy_by_id(
     id: int,
     db: DbDep,
@@ -45,7 +49,7 @@ async def get_vacancy_by_id(
     )
 
 
-@router.get("{vacancy_id}/tags")
+@router.get('{vacancy_id}/tags')
 async def get_tags(
     db: DbDep,
     pagination: PaginationDap,
@@ -55,14 +59,13 @@ async def get_tags(
     return await db.tags.get_filtered(id=vacancy_id)
 
 
-@router.post("")
+@router.post('')
 async def create_vacancy(
     db: DbDep,
     user_id: UserIdDap,
     data: VacancyAddRequest,
-    organization=Depends(has_role("organization")),
+    organization=Depends(has_role('organization')),
 ):
-
     _vacancy_data = VacancyAdd(**data.model_dump())
     result = await db.vacancies.add(_vacancy_data)
 
@@ -73,15 +76,15 @@ async def create_vacancy(
         try:
             await db.tags_vacancies.add_bulk(tags_vacancies_data)
         except IntegrityError:
-            raise HTTPException(400, detail="tags not found")
+            raise HTTPException(400, detail='tags not found')
 
-    await redis_manager.clear_namespace("vacancies")
+    await redis_manager.clear_namespace('vacancies')
 
     await db.commit()
     return result
 
 
-@router.patch("/{id}")
+@router.patch('/{id}')
 async def patch_vacancy(
     id: int,
     db: DbDep,
