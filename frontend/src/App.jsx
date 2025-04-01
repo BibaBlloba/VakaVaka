@@ -6,11 +6,11 @@ import Vacancy from "./scenes/Vacancy";
 import Authorization from "./components/Authorization";
 import {
   BrowserRouter,
-  createBrowserRouter,
   Route,
   Routes,
 } from "react-router-dom";
 import Footer from "./scenes/Footer";
+import MyResume from "./scenes/MyResume";
 
 function App() {
   return (
@@ -21,6 +21,7 @@ function App() {
           <Route path="/search" element={<SearchPage />} />
           <Route path="/test-auth" element={<Authorization />} />
           <Route path="/test-login" element={<LoginForm />} />
+          <Route path="/test-profile" element={<MyResume />} />
           <Route path="/" element={<SearchPage />} />
           <Route path="/vacancy/:id" element={<Vacancy />} />
           <Route path="/create-vacancy" element={<CreateVacancyPage />} />

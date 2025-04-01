@@ -103,7 +103,9 @@ const Navbar = () => {
           </button>
         </div>
         <Dropdown trigger={['click']} menu={menuProps}>
-          <FaRegUserCircle className="hover:cursor-pointer" size={27} />
+          <a href="">
+            <FaRegUserCircle className="hover:cursor-pointer" size={27} />
+          </a>
         </Dropdown>
       </div>
     </div>
